@@ -1,7 +1,5 @@
 package com.example.Gatekeeper_backend.DTO;
 
-import com.example.Gatekeeper_backend.Entity.Flat;
-import com.example.Gatekeeper_backend.Enum.Role;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -11,10 +9,10 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDTO {
+public class VisitorDTO {
 
-    @NonNull //data validation
-    @Size(max = 255)
+    @NotNull
+    @Size(max=255)
     private String name ;
 
     @NonNull //data validation
@@ -27,11 +25,5 @@ public class UserDTO {
 
     @NotNull
     private String idNumber ;
-
-
-    private Role role ;
-
-    private String flatNo ;
-
-    private AddressDTO address ;
+    private AddressDTO addressDTO ;
 }
