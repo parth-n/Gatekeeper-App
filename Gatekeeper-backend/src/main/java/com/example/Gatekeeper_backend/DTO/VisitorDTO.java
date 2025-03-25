@@ -1,5 +1,7 @@
 package com.example.Gatekeeper_backend.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -9,6 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VisitorDTO {
 
     @NotNull
@@ -25,5 +28,6 @@ public class VisitorDTO {
 
     @NotNull
     private String idNumber ;
-    private AddressDTO addressDTO ;
+
+    private AddressDTO address ;
 }

@@ -18,14 +18,19 @@ public class ResidentController {
     @Autowired
     private ResidentService residentService ;
 
-    @PostMapping("/actOnVisit/{id}")
+    @PutMapping("/actOnVisit/{id}")
     public ResponseEntity<String> actOnVisit (@PathVariable Long id, @RequestParam VisitStatus visitStatus){
         return ResponseEntity.ok(residentService.updateVisit(id,visitStatus)) ;
     }
 
     @GetMapping("/pendingVisits")
     public ResponseEntity<List<VisitDTO>> getPendingVisits(@RequestHeader Long userId){
-        return ResponseEntity.ok(null) ;
+        return ResponseEntity.ok(residentService.getPendingVisits(userId)) ;
+    }
+
+    @GetMapping("/page-pendingVisits")
+    public ResponseEntity<List<VisitDTO>> getPagePendingVisits(@RequestHeader Long userId,Integer pageNo, Integer pageSize){
+        return ResponseEntity.ok(residentService.getPendingVisitByPage(userId,pageNo,pageSize)) ;
     }
 
 }

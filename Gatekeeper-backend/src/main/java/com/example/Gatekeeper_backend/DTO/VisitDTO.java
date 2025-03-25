@@ -1,6 +1,7 @@
 package com.example.Gatekeeper_backend.DTO;
 
 import com.example.Gatekeeper_backend.Enum.VisitStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -13,6 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VisitDTO {
     private VisitStatus status ;
 
@@ -35,5 +37,8 @@ public class VisitDTO {
 
     @NotNull
     private String flatNumber ;
+
+    private String visitorName ;
+    private String visitorPhone ;
 
 }

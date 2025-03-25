@@ -8,17 +8,20 @@ import com.example.Gatekeeper_backend.Entity.Flat;
 import com.example.Gatekeeper_backend.Entity.Visit;
 import com.example.Gatekeeper_backend.Entity.Visitor;
 import com.example.Gatekeeper_backend.Enum.VisitStatus;
+import com.example.Gatekeeper_backend.Exceptions.BadRequest;
+import com.example.Gatekeeper_backend.Exceptions.NotFound;
 import com.example.Gatekeeper_backend.Repo.FlatRepo;
 import com.example.Gatekeeper_backend.Repo.VisitRepo;
 import com.example.Gatekeeper_backend.Repo.VisitorRepo;
 import com.example.Gatekeeper_backend.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
 @Service
-public class GatekeeperService {
+public class    GatekeeperService {
 
     @Autowired
     private VisitorRepo visitorRepo ;
@@ -48,7 +51,7 @@ public class GatekeeperService {
     }
 
     public Long createVisitor(VisitorDTO visitorDTO){
-        AddressDTO addressDTO = visitorDTO.getAddressDTO() ;
+        AddressDTO addressDTO = visitorDTO.getAddress() ;
         Address address =   commonUtil.convertAddressDTOToAddress(addressDTO) ;
         Visitor visitor = Visitor.builder()
                 .address(address)
@@ -79,16 +82,20 @@ public class GatekeeperService {
         return visit.getId() ;
     }
 
+    @Transactional
     public String markEntry(Long id){
         Visit visit = visitRepo.findById(id).get() ;
         if(visit==null){
             //exception
+            throw new NotFound("Not found") ;
         }
         if(visit.getStatus().equals(VisitStatus.APPROVED)){
             visit.setInTime(new Date());
+           // visitRepo.save(visit) ; without transactional
         }
         else{
             //exception
+            throw new BadRequest("Invalid state transition") ;
         }
         return "Done" ;
     }
