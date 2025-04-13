@@ -1,6 +1,7 @@
 package com.example.Gatekeeper_backend.Controller;
 
 
+import com.example.Gatekeeper_backend.DTO.AllPendingVisitsDTO;
 import com.example.Gatekeeper_backend.DTO.VisitDTO;
 import com.example.Gatekeeper_backend.Enum.VisitStatus;
 import com.example.Gatekeeper_backend.Service.ResidentService;
@@ -29,7 +30,7 @@ public class ResidentController {
     }
 
     @GetMapping("/page-pendingVisits")
-    public ResponseEntity<List<VisitDTO>> getPagePendingVisits(@RequestHeader Long userId,Integer pageNo, Integer pageSize){
+    public ResponseEntity<AllPendingVisitsDTO> getPagePendingVisits(@RequestHeader Long userId, Integer pageNo, Integer pageSize){
         return ResponseEntity.ok(residentService.getPendingVisitByPage(userId,pageNo,pageSize)) ;
     }
 

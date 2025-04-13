@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class    GatekeeperService {
@@ -84,11 +85,12 @@ public class    GatekeeperService {
 
     @Transactional
     public String markEntry(Long id){
-        Visit visit = visitRepo.findById(id).get() ;
-        if(visit==null){
+        Optional<Visit> visitOptional = visitRepo.findById(id) ;
+        if(visitOptional.isEmpty()){
             //exception
             throw new NotFound("Not found") ;
         }
+        Visit visit = visitOptional.get() ;
         if(visit.getStatus().equals(VisitStatus.APPROVED)){
             visit.setInTime(new Date());
            // visitRepo.save(visit) ; without transactional
@@ -100,10 +102,12 @@ public class    GatekeeperService {
         return "Done" ;
     }
 
+    @Transactional
     public String markExit(Long id){
         Visit visit = visitRepo.findById(id).get() ;
         if(visit==null){
             //exception
+            throw new NotFound("Visit not found !") ;
         }
         if(visit.getStatus().equals(VisitStatus.APPROVED) && visit.getInTime()!=null){
             visit.setOutTime(new Date());
@@ -111,6 +115,7 @@ public class    GatekeeperService {
         }
         else{
             //exception
+            throw new BadRequest("Invalid state transition") ;
         }
         return "Done" ;
     }

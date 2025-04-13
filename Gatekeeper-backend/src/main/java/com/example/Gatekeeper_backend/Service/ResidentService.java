@@ -1,5 +1,6 @@
 package com.example.Gatekeeper_backend.Service;
 
+import com.example.Gatekeeper_backend.DTO.AllPendingVisitsDTO;
 import com.example.Gatekeeper_backend.DTO.VisitDTO;
 import com.example.Gatekeeper_backend.Entity.Flat;
 import com.example.Gatekeeper_backend.Entity.User;
@@ -75,7 +76,9 @@ public class ResidentService {
         return visitDTOList ;
     }
 
-    public List<VisitDTO> getPendingVisitByPage(Long userId, Integer pageNo, Integer pageSize){
+    public AllPendingVisitsDTO getPendingVisitByPage(Long userId, Integer pageNo, Integer pageSize){
+        AllPendingVisitsDTO allPendingVisitsDTO = new AllPendingVisitsDTO() ;
+
         Pageable pageable = Pageable.ofSize(pageSize)
                 .withPage(pageNo) ;
         User user = userRepo.findById(userId).get() ;
@@ -98,6 +101,9 @@ public class ResidentService {
             visitDTOList.add(visitDTO) ;
         }
 
-        return visitDTOList ;
+        allPendingVisitsDTO.setVisits(visitDTOList);
+        allPendingVisitsDTO.setTotalPages(visitPage.getTotalPages());
+        allPendingVisitsDTO.setTotalRows(visitPage.getTotalElements());
+        return allPendingVisitsDTO ;
     }
 }
