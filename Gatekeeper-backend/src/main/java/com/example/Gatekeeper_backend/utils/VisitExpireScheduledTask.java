@@ -23,7 +23,7 @@ public class VisitExpireScheduledTask {
 
     @Scheduled(fixedDelay = 5000)
     public void markVisitAsExpired(){
-        LOGGER.info("marking visit as expired") ;
+      //  LOGGER.info("marking visit as expired") ;
 
         Date date = new Date() ;
         date.setMinutes(date.getMinutes()-30);

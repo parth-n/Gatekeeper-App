@@ -9,11 +9,14 @@ import com.example.Gatekeeper_backend.Entity.Visitor;
 import com.example.Gatekeeper_backend.Enum.VisitStatus;
 import com.example.Gatekeeper_backend.Exceptions.BadRequest;
 import com.example.Gatekeeper_backend.Exceptions.NotFound;
+import com.example.Gatekeeper_backend.Repo.FlatRepo;
 import com.example.Gatekeeper_backend.Repo.UserRepo;
 import com.example.Gatekeeper_backend.Repo.VisitRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,6 +32,9 @@ public class ResidentService {
     @Autowired
     private VisitRepo visitRepo ;
 
+    @Autowired
+    private FlatRepo flatRepo ;
+
     public String updateVisit(Long id, VisitStatus visitStatus){
         if(visitStatus != VisitStatus.REJECTED && visitStatus != VisitStatus.APPROVED){
             //exception
@@ -39,8 +45,13 @@ public class ResidentService {
             //exception
             throw new NotFound("Visitor not found") ;
         }
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal() ;
+        if(user.getFlat() != visit.getFlat()){
+            throw new BadRequest("Invalid visit id ") ;
+        }
         if(VisitStatus.WAITING.equals((visit.getStatus()))){
             visit.setStatus(visitStatus);
+            visit.setApprovedBy(user);
             visitRepo.save(visit) ;
         }
         else{

@@ -42,6 +42,10 @@ public class Visit { // it will map visitor to flat
     @JoinColumn(name = "flat_id")
     private Flat flat ;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User approvedBy ;
+
     @CreationTimestamp
     private Date createdDate ;
     @UpdateTimestamp

@@ -10,6 +10,7 @@ import com.example.Gatekeeper_backend.Repo.FlatRepo;
 import com.example.Gatekeeper_backend.Repo.UserRepo;
 import com.example.Gatekeeper_backend.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,6 +24,9 @@ public class AdminService {
 
     @Autowired
     private CommonUtil commonUtil ;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Long createUser(UserDTO userDTO){
 
@@ -40,6 +44,7 @@ public class AdminService {
                 .phone(userDTO.getPhone())
                 .role(userDTO.getRole())
                 .idNumber(userDTO.getIdNumber())
+                .password(passwordEncoder.encode(userDTO.getPassword()))
                 .flat(flat)
                 .userStatus(UserStatus.ACTIVE)
                 .address(address) //building address from address dto is necessary before this.

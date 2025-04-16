@@ -3,11 +3,13 @@ package com.example.Gatekeeper_backend.Controller;
 
 import com.example.Gatekeeper_backend.DTO.AllPendingVisitsDTO;
 import com.example.Gatekeeper_backend.DTO.VisitDTO;
+import com.example.Gatekeeper_backend.Entity.User;
 import com.example.Gatekeeper_backend.Enum.VisitStatus;
 import com.example.Gatekeeper_backend.Service.ResidentService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,13 +27,13 @@ public class ResidentController {
     }
 
     @GetMapping("/pendingVisits")
-    public ResponseEntity<List<VisitDTO>> getPendingVisits(@RequestHeader Long userId){
-        return ResponseEntity.ok(residentService.getPendingVisits(userId)) ;
+    public ResponseEntity<List<VisitDTO>> getPendingVisits(@AuthenticationPrincipal User user){
+        return ResponseEntity.ok(residentService.getPendingVisits(user.getId())) ;
     }
 
     @GetMapping("/page-pendingVisits")
-    public ResponseEntity<AllPendingVisitsDTO> getPagePendingVisits(@RequestHeader Long userId, Integer pageNo, Integer pageSize){
-        return ResponseEntity.ok(residentService.getPendingVisitByPage(userId,pageNo,pageSize)) ;
+    public ResponseEntity<AllPendingVisitsDTO> getPagePendingVisits(@AuthenticationPrincipal User user, Integer pageNo, Integer pageSize){
+        return ResponseEntity.ok(residentService.getPendingVisitByPage(user.getId(),pageNo,pageSize)) ;
     }
 
 }

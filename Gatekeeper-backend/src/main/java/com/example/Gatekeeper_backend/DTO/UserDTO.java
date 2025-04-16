@@ -28,7 +28,7 @@ public class UserDTO {
     @NotNull
     private String idNumber ;
 
-
+    private String password ;
     private Role role ;
 
     private String flatNo ;
