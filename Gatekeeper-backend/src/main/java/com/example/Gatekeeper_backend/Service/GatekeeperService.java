@@ -15,11 +15,13 @@ import com.example.Gatekeeper_backend.Repo.VisitRepo;
 import com.example.Gatekeeper_backend.Repo.VisitorRepo;
 import com.example.Gatekeeper_backend.utils.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class    GatekeeperService {
@@ -36,17 +38,29 @@ public class    GatekeeperService {
     @Autowired
     private VisitRepo visitRepo ;
 
+    @Autowired
+    private RedisTemplate<String, VisitorDTO> redisTemplate ;
+
     public VisitorDTO getVisitor(String idNumber){
-        Visitor visitor = visitorRepo.findByIdNumber(idNumber) ;
-        VisitorDTO visitorDTO = null ;
-        if(visitor != null){ // if the visitor is not in the db, it will build the data
-            visitorDTO = VisitorDTO.builder()
-                    .name(visitor.getName())
-                    .email(visitor.getEmail())
-                    .phone(visitor.getPhone())
-                    .idNumber(visitor.getIdNumber())
-                    .build() ;
+        //cache logic
+        //key  : visitor{idNumber}
+        //value : Object VisitorDTO
+        String key = "visitor:"+idNumber ;
+
+        VisitorDTO visitorDTO = redisTemplate.opsForValue().get(key) ;
+        if(visitorDTO==null){
+            Visitor visitor = visitorRepo.findByIdNumber(idNumber) ;
+            if(visitor != null){ // if the visitor is not in the db, it will build the data
+                visitorDTO = VisitorDTO.builder()
+                        .name(visitor.getName())
+                        .email(visitor.getEmail())
+                        .phone(visitor.getPhone())
+                        .idNumber(visitor.getIdNumber())
+                        .build() ;
+            }
+            redisTemplate.opsForValue().set(key,visitorDTO,24, TimeUnit.HOURS) ;
         }
+
 
         return visitorDTO ;
     }

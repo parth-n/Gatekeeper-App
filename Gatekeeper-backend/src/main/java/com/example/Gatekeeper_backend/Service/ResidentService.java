@@ -2,6 +2,7 @@ package com.example.Gatekeeper_backend.Service;
 
 import com.example.Gatekeeper_backend.DTO.AllPendingVisitsDTO;
 import com.example.Gatekeeper_backend.DTO.VisitDTO;
+import com.example.Gatekeeper_backend.DTO.VisitorDTO;
 import com.example.Gatekeeper_backend.Entity.Flat;
 import com.example.Gatekeeper_backend.Entity.User;
 import com.example.Gatekeeper_backend.Entity.Visit;
@@ -15,6 +16,7 @@ import com.example.Gatekeeper_backend.Repo.VisitRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ public class ResidentService {
 
     @Autowired
     private FlatRepo flatRepo ;
+
 
     public String updateVisit(Long id, VisitStatus visitStatus){
         if(visitStatus != VisitStatus.REJECTED && visitStatus != VisitStatus.APPROVED){
